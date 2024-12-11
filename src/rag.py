@@ -7,18 +7,20 @@ from llama_index.core import Settings
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.node_parser import TokenTextSplitter
 
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
+GOOGLE_API_KEY = os.getenv("GEMINI_KEY")
 
-GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+print(GOOGLE_API_KEY)
 
 documents = SimpleDirectoryReader(
     input_files=["./data/Engineering-workshop-health-and-safety-guidelines-catalog.pdf"]
 ).load_data()
 
 
-llm  = Gemini(model="models/gemini-1.5-pro", temperature=0.3, top_p=1, top_k=32)
+llm  = Gemini(model="models/gemini-1.5-pro", temperature=0.3, top_p=1, top_k=32, api_key=GOOGLE_API_KEY)
 
 embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
