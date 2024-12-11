@@ -13,8 +13,6 @@ from dotenv import load_dotenv
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GEMINI_KEY")
 
-print(GOOGLE_API_KEY)
-
 documents = SimpleDirectoryReader(
     input_files=["./data/Engineering-workshop-health-and-safety-guidelines-catalog.pdf"]
 ).load_data()
@@ -33,12 +31,16 @@ Settings.llm = llm
 Settings.embed_model = embed_model
 Settings.text_splitter = text_splitter
 
-index = VectorStoreIndex.from_documents(documents, show_progress=True)
-
+documents = SimpleDirectoryReader("data").load_data()
+index = VectorStoreIndex.from_documents(documents)
 query_engine = index.as_query_engine()
+
+# Debugging: Print the query engine and response
+print("Query Engine initialized:", query_engine)
 
 response = query_engine.query(
     "What is the easiest way to communicate with someone who does not know your language?"
 )
 
-print(str(response))
+# Debugging: Print the response
+print("Response received:", response)
