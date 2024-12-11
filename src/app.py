@@ -37,10 +37,10 @@ else:
 
 query_engine = index.as_query_engine()
 
-st.write("Bem vindo ao chatobt gênio da lâmpada!")
-st.text_input("Tire sua dúvida aqui!", key="doubt")
+st.title("Welcome to the master of engineering!")
+st.text_input("Ask any question and the genius will answer it for you!", key="doubt")
 
-if st.button("Enviar"):
-    st.write("Pensando...")
-    response = query_engine.query(st.session_state.doubt)
-    st.write(response.response)
+if st.button("Ask the genius"):
+    with st.spinner("Processing the data..."):
+        response = query_engine.query(st.session_state.doubt)
+    st.write("Result: " + response.response)
