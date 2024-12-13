@@ -43,15 +43,12 @@ st.title("Welcome to the master of engineering!")
 st.text_input("Ask any question and the genius will answer it for you!", key="doubt")
 
 if st.button("Ask the genius"):
-    # Placeholder para a resposta
     response_placeholder = st.empty()
     
-    # Obtém a resposta de forma incremental
     response = query_engine.query(st.session_state.doubt)
     
-    # Inicializa o texto da resposta
     streamed_response = ""
     
     for token in response.response_gen:
-        streamed_response += token  # Adiciona o novo token à resposta acumulada
-        response_placeholder.write(streamed_response)  # Atualiza o placeholder com o conteúdo atualizado
+        streamed_response += token
+        response_placeholder.write(streamed_response)  
