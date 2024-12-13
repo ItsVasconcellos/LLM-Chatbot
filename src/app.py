@@ -32,7 +32,7 @@ else:
     storage_context = StorageContext.from_defaults(persist_dir=PERSIST_DIR)
     index = load_index_from_storage(storage_context)
 
-chat_engine = index.as_query_engine(similarity_top_k=2,system_prompt=("Consider that you are an assistnat made"   "to respond about industrial safety standards accodring to the context provided. "
+query_engine = index.as_query_engine(streaming=True,similarity_top_k=2,system_prompt=("Consider that you are an assistnat made"   "to respond about industrial safety standards accodring to the context provided. "
         "You shall give clear and concise answers based on the information provided in the context. "
         "If there is no match betweenthe context and the question, you should respond that the answer is not known."
         "Limit your response to 3 sentences. If really necessary, you can provide up to 5 sentences. "
@@ -43,6 +43,15 @@ st.title("Welcome to the master of engineering!")
 st.text_input("Ask any question and the genius will answer it for you!", key="doubt")
 
 if st.button("Ask the genius"):
-    with st.spinner("Processing the data..."):
-        response = chat_engine.query(st.session_state.doubt)
-    st.write("Result: " + response.response)
+    # Placeholder para a resposta
+    response_placeholder = st.empty()
+    
+    # Obtém a resposta de forma incremental
+    response = query_engine.query(st.session_state.doubt)
+    
+    # Inicializa o texto da resposta
+    streamed_response = ""
+    
+    for token in response.response_gen:
+        streamed_response += token  # Adiciona o novo token à resposta acumulada
+        response_placeholder.write(streamed_response)  # Atualiza o placeholder com o conteúdo atualizado
