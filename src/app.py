@@ -39,16 +39,32 @@ query_engine = index.as_query_engine(streaming=True,similarity_top_k=2,system_pr
         "If you need more information, ask the user for clarification. "
         "Always respond in English.\n\n"))
 
-st.title("Welcome to the master of engineering!")
-st.text_input("Ask any question and the genius will answer it for you!", key="doubt")
+st.title("Welcome to the master of safety engineering!")
 
-if st.button("Ask the genius"):
-    response_placeholder = st.empty()
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if prompt := st.chat_input("Ask any question and the genius will answer it for you!"):
+    # Display user message in chat message container
+    st.chat_message("user").markdown(prompt)
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
     
-    response = query_engine.query(st.session_state.doubt)
+    # Get Response from query engine
+    response = query_engine.query(prompt)
+
+    # Display chatbot response in chat message container
+    with st.chat_message("assistant"):
+        response_placeholder = st.empty()
+        streamed_response = ""
     
-    streamed_response = ""
-    
-    for token in response.response_gen:
-        streamed_response += token
-        response_placeholder.write(streamed_response)  
+        for token in response.response_gen:
+            streamed_response += token
+            response_placeholder.write(streamed_response)  
+            
+    st.session_state.messages.append({"role": "assistant", "content": streamed_response})
